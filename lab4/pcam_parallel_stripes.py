@@ -88,7 +88,7 @@ if rank == 0:
     end = time.time()
     exec_time = end - start
 
-    filename = "times_local.csv"
+    filename = "times.csv"
     if not os.path.exists(filename):
         with open(filename, "a") as myfile:
             myfile.write('z_n,n,i,p,t\n')
