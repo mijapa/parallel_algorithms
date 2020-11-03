@@ -1,5 +1,6 @@
 #!/bin/bash -l
-#SBATCH --ntasks 16
+#SBATCH --nodes 1
+#SBATCH --ntasks 12
 #SBATCH --time=00:30:00
 #SBATCH --mem-per-cpu=100MB
 #SBATCH --partition=plgrid
@@ -7,7 +8,7 @@
 
 module load plgrid/tools/python-intel/3.6.5
 
-for n in 10000 100000 1000000; do
+for n in 100 1000 100000; do
   echo "$n"
     for ((i=1; i<=$1; i++)); do
     echo "$i"
@@ -17,4 +18,4 @@ for n in 10000 100000 1000000; do
     done
 done
 
-# sbatch batch.sh 16 3 1000
+# sbatch batch.sh 12 3 100
