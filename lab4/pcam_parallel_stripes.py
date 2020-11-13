@@ -1,4 +1,10 @@
 #!/usr/bin/env python
+"""
+iterations
+task_size
+cores
+"""
+
 import math
 import os
 import time
@@ -53,33 +59,33 @@ def calculate(t0):
     return t1
 
 
-sq = int(math.sqrt(n)/size)
+sq = int(math.sqrt(n) / size)
 stripe_v = int(elements_per_task / sq)
 stripe_h = int(elements_per_task / stripe_v)
 
-t = np.zeros((stripe_h+2, stripe_v+2))
+t = np.zeros((stripe_h + 2, stripe_v + 2))
 # initial_table = np.arange(stripe_h * stripe_v).reshape((stripe_h, stripe_v))
 # t[1:stripe_h+1, 1:stripe_v+1] = initial_table
 
 for _ in range(maxiter):
 
     if rank + 1 < size:
-        penultimate_strip = t[stripe_h, 1:stripe_v+1]
+        penultimate_strip = t[stripe_h, 1:stripe_v + 1]
         comm.isend(penultimate_strip, dest=rank + 1)
 
         recived = comm.recv(source=rank + 1)
-        t[stripe_h + 1, 1:stripe_v+1] = recived
+        t[stripe_h + 1, 1:stripe_v + 1] = recived
 
     if rank - 1 >= 0:
-        second_strip = t[1, 1:stripe_v+1]
+        second_strip = t[1, 1:stripe_v + 1]
         comm.isend(second_strip, dest=rank - 1)
 
         recived = comm.recv(source=rank - 1)
-        t[0, 1:stripe_v+1] = recived
+        t[0, 1:stripe_v + 1] = recived
 
     t = calculate(t)
 
-t = t[1:stripe_h+1, 1:stripe_v+1]
+t = t[1:stripe_h + 1, 1:stripe_v + 1]
 array = comm.gather(t, root=0)
 
 comm.Barrier()
